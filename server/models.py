@@ -8,13 +8,13 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
-class Bakery(db.Model, SerializerMixin):
+class Bakery(db.Model):
     __tablename__ = 'bakeries'
 
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
 
-class BakedGood(db.Model, SerializerMixin):
-    __tablename__ = 'baked_goods'
-
-    id = db.Column(db.Integer, primary_key=True)
+    def __init__(self, name):
+        self.name = name
     

@@ -14,25 +14,20 @@ migrate = Migrate(app, db)
 
 db.init_app(app)
 
-@app.route('/')
-def index():
-    return '<h1>Bakery GET API</h1>'
+@app.route('/bakeries', methods=['GET'])
+def get_bakeries():
+    bakeries = Bakery.query.all()
+    bakery_list = [{'id': bakery.id, 'name': bakery.name, 'created_at': bakery.created_at} for bakery in bakeries]
+    return jsonify(bakery_list)
 
-@app.route('/bakeries')
-def bakeries():
-    return ''
+@app.route('/bakeries/<int:id>', methods=['GET'])
+def get_bakery_by_id(id):
+    bakery = Bakery.query.get(id)
+    if bakery is None:
+        return jsonify({'error': 'Bakery not found'}), 404
+    return jsonify({'id': bakery.id, 'name': bakery.name, 'created_at': bakery.created_at})
 
-@app.route('/bakeries/<int:id>')
-def bakery_by_id(id):
-    return ''
-
-@app.route('/baked_goods/by_price')
-def baked_goods_by_price():
-    return ''
-
-@app.route('/baked_goods/most_expensive')
-def most_expensive_baked_good():
-    return ''
+# Implement similar routes and handlers for '/baked_goods' and '/baked_goods/most_expensive'
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(debug=True)
